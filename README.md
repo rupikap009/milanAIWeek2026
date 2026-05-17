@@ -21,30 +21,30 @@ The core technical philosophy behind Mythos.OS is **Automated State Consistency*
 
 The entire platform orchestrates four distinct AI agent personas built using the **Google Gemini API**, working in a synchronous execution loop to maintain the state of the story world:
 
-[ User Input / Spoken Proposal ]
-│
-▼
-┌───────────────────┐
-│  Speechmatics API │ ──► (Accurate Voice-to-Text Transcription)
-└───────────────────┘
-│
-▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                         MYTHOS.OS SWARM CORE                           │
-│                                                                        │
-│  1. Universe Generator Agent (Gemini Flash)                            │
-│     └─► Builds laws, history, and geographical metadata                │
-│                                                                        │
-│  2. Visual Director Agent (Gemini Flash)                               │
-│     └─► Extracts visual keywords and pings Pollinations AI for Art     │
-│                                                                        │
-│  3. Lore Keeper Agent [The Referee] (Gemini Pro)                       │
-│     └─► Evaluates inputs. Emits: [APPROVED] or [REJECTED]              │
-│                                                                        │
-│  4. Character Persona Agent [Jack] (Gemini Flash)                      │
-│     └─► Evaluates downstream timeline and reacts strictly in-character │
-└────────────────────────────────────────────────────────────────────────┘
-
+```text
+[ User Input / Spoken Proposal ] 
+              │
+              ▼
+    ┌───────────────────┐
+    │  Speechmatics API │ ──► (Accurate Voice-to-Text Transcription)
+    └───────────────────┘
+              │
+              ▼
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                         MYTHOS.OS SWARM CORE                           │
+ │                                                                        │
+ │  1. Universe Generator Agent (Gemini Flash)                            │
+ │     └─► Builds laws, history, and geographical metadata                │
+ │                                                                        │
+ │  2. Visual Director Agent (Gemini Flash)                               │
+ │     └─► Extracts visual keywords and pings Pollinations AI for Art     │
+ │                                                                        │
+ │  3. Lore Keeper Agent [The Referee] (Gemini Pro)                       │
+ │     └─► Evaluates inputs. Emits: [APPROVED] or [REJECTED]              │
+ │                                                                        │
+ │  4. Character Persona Agent [Jack] (Gemini Flash)                      │
+ │     └─► Evaluates downstream timeline and reacts strictly in-character │
+ └────────────────────────────────────────────────────────────────────────┘
 
 ### 🤖 Agent Roles & Internal Prompts
 
