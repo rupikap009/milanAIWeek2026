@@ -39,7 +39,7 @@ def initialize_universe(prompt):
     try:
         # Agent 1: Universe Generator
         universe_model = genai.GenerativeModel(
-            'gemini-1.5-flash',
+            'gemini-flash-lite-latest',
             system_instruction=(
                 "You are the Universe Generator Agent. Your task is to establish the core world "
                 "foundations, rules, geography, and primary factions based on the user's prompt. "
@@ -50,7 +50,7 @@ def initialize_universe(prompt):
         
         # Agent 2: Visual Director
         visual_model = genai.GenerativeModel(
-            'gemini-1.5-flash',
+            'gemini-flash-lite-latest',
             system_instruction="You are a Visual Director Agent. Output only the comma-separated prompt for image generation, nothing else."
         )
         visual_prompt_response = visual_model.generate_content(
@@ -87,7 +87,7 @@ def propose_event(proposed_event_text):
     try:
         # Agent 3: Lore Keeper
         lore_keeper_model = genai.GenerativeModel(
-            'gemini-1.5-flash',
+            'gemini-flash-lite-latest',
             system_instruction=(
                 "You are the Lore Keeper Agent. You receive the existing world lore, the current "
                 "timeline history, and a new proposed event. You must check the new proposed event "
@@ -109,7 +109,7 @@ def propose_event(proposed_event_text):
             )
             try:
                 character_model = genai.GenerativeModel(
-                    'gemini-1.5-flash',
+                    'gemini-flash-lite-latest',
                     system_instruction="You are a Character Agent (Jack the Whisper Merchant). React strictly in-character to the event."
                 )
                 char_response = character_model.generate_content(character_prompt)
