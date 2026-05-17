@@ -1,4 +1,5 @@
 streamlit
-google-genai
-speechmatics
+google-generativeai
+speechmatics-batch
+python-multipart
 requests

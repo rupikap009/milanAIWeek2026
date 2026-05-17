@@ -4,8 +4,7 @@ import random
 import urllib.parse
 import time
 import asyncio
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from speechmatics.batch import AsyncClient, TranscriptionConfig
 
 # Setup Page Layout
@@ -25,7 +24,7 @@ except KeyError as e:
     st.stop()
 
 # --- 2. INITIALIZE CLIENTS & STATE ---
-client = genai.Client(api_key=GEMINI_KEY)
+genai.configure(api_key=GEMINI_KEY)
 
 if "universe_database" not in st.session_state:
     st.session_state.universe_database = {
@@ -39,25 +38,23 @@ if "universe_database" not in st.session_state:
 def initialize_universe(prompt):
     try:
         # Agent 1: Universe Generator
-        response = client.models.generate_content(
-            model='gemini-flash-lite-latest',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=(
-                    "You are the Universe Generator Agent. Your task is to establish the core world "
-                    "foundations, rules, geography, and primary factions based on the user's prompt. "
-                    "Provide a cohesive and engaging overview of this universe."
-                )
+        universe_model = genai.GenerativeModel(
+            'gemini-1.5-flash',
+            system_instruction=(
+                "You are the Universe Generator Agent. Your task is to establish the core world "
+                "foundations, rules, geography, and primary factions based on the user's prompt. "
+                "Provide a cohesive and engaging overview of this universe."
             )
         )
+        response = universe_model.generate_content(prompt)
         
         # Agent 2: Visual Director
-        visual_prompt_response = client.models.generate_content(
-            model='gemini-flash-lite-latest',
-            contents=f"Extract visual keywords to create a gorgeous concept art background for this universe lore. Make it a detailed prompt for an AI image generator (comma separated keywords, highly detailed, vivid). No text in image.\n\nLore:\n{response.text}",
-            config=types.GenerateContentConfig(
-                system_instruction="You are a Visual Director Agent. Output only the comma-separated prompt for image generation, nothing else."
-            )
+        visual_model = genai.GenerativeModel(
+            'gemini-1.5-flash',
+            system_instruction="You are a Visual Director Agent. Output only the comma-separated prompt for image generation, nothing else."
+        )
+        visual_prompt_response = visual_model.generate_content(
+            f"Extract visual keywords to create a gorgeous concept art background for this universe lore. Make it a detailed prompt for an AI image generator (comma separated keywords, highly detailed, vivid). No text in image.\n\nLore:\n{response.text}"
         )
         
         encoded_prompt = urllib.parse.quote(visual_prompt_response.text.strip())
@@ -88,24 +85,22 @@ def propose_event(proposed_event_text):
     context += f"\nProposed New Event:\n{proposed_event_text}"
     
     try:
-        response = client.models.generate_content(
-            model='gemini-flash-lite-latest',
-            contents=context,
-            config=types.GenerateContentConfig(
-                system_instruction=(
-                    "You are the Lore Keeper Agent. You receive the existing world lore, the current "
-                    "timeline history, and a new proposed event. You must check the new proposed event "
-                    "for any logical or chronological contradictions against the lore and timeline.\n"
-                    "You must strictly prefix your response with either 'APPROVED:' or 'REJECTED:' "
-                    "followed by your reasoning."
-                )
+        # Agent 3: Lore Keeper
+        lore_keeper_model = genai.GenerativeModel(
+            'gemini-1.5-flash',
+            system_instruction=(
+                "You are the Lore Keeper Agent. You receive the existing world lore, the current "
+                "timeline history, and a new proposed event. You must check the new proposed event "
+                "for any logical or chronological contradictions against the lore and timeline.\n"
+                "You must strictly prefix your response with either 'APPROVED:' or 'REJECTED:' "
+                "followed by your reasoning."
             )
         )
-        
+        response = lore_keeper_model.generate_content(context)
         decision = response.text.strip()
         
         if decision.startswith("APPROVED:") or "APPROVED" in decision.upper():
-            # Agent 3: Character Agent (Jack the Whisper Merchant Persona)
+            # Agent 4: Character Agent (Jack the Whisper Merchant Persona)
             character_prompt = (
                 f"Universe Lore:\n{st.session_state.universe_database['world_lore']}\n\n"
                 f"Approved Event: {proposed_event_text}\n\n"
@@ -113,13 +108,11 @@ def propose_event(proposed_event_text):
                 "Provide a 1-3 sentence reaction showing how this event impacts your black-market network or the local populace."
             )
             try:
-                char_response = client.models.generate_content(
-                    model='gemini-flash-lite-latest',
-                    contents=character_prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction="You are a Character Agent (Jack the Whisper Merchant). React strictly in-character to the event."
-                    )
+                character_model = genai.GenerativeModel(
+                    'gemini-1.5-flash',
+                    system_instruction="You are a Character Agent (Jack the Whisper Merchant). React strictly in-character to the event."
                 )
+                char_response = character_model.generate_content(character_prompt)
                 reaction = char_response.text.strip()
             except Exception:
                 reaction = "*Jack goes offline...*"
@@ -196,7 +189,7 @@ if universe_data and universe_data.get("visual_url"):
 
 # App Headers
 st.title("🌌 Mythos.OS // The Living Universe Engine")
-st.caption("Powered by Gemini Flash Lite & Speechmatics")
+st.caption("Powered by Gemini 1.5 Flash & Speechmatics")
 st.markdown("---")
 
 # Sidebar - Universe Initialization
