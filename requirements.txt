@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+google-genai
+streamlit
+requests
+speechmatics
+python-multipart
+websockets
