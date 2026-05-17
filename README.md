@@ -21,30 +21,15 @@ The core technical philosophy behind Mythos.OS is **Automated State Consistency*
 
 The entire platform orchestrates four distinct AI agent personas built using the **Google Gemini API**, working in a synchronous execution loop to maintain the state of the story world:
 
-```text
-[ User Input / Spoken Proposal ] 
-              │
-              ▼
-    ┌───────────────────┐
-    │  Speechmatics API │ ──► (Accurate Voice-to-Text Transcription)
-    └───────────────────┘
-              │
-              ▼
- ┌────────────────────────────────────────────────────────────────────────┐
- │                         MYTHOS.OS SWARM CORE                           │
- │                                                                        │
- │  1. Universe Generator Agent (Gemini Flash)                            │
- │     └─► Builds laws, history, and geographical metadata                │
- │                                                                        │
- │  2. Visual Director Agent (Gemini Flash)                               │
- │     └─► Extracts visual keywords and pings Pollinations AI for Art     │
- │                                                                        │
- │  3. Lore Keeper Agent [The Referee] (Gemini Pro)                       │
- │     └─► Evaluates inputs. Emits: [APPROVED] or [REJECTED]              │
- │                                                                        │
- │  4. Character Persona Agent [Jack] (Gemini Flash)                      │
- │     └─► Evaluates downstream timeline and reacts strictly in-character │
- └────────────────────────────────────────────────────────────────────────┘
+| Phase | Component | Underlying Model / Tool | Autonomous Responsibility |
+| :--- | :--- | :--- | :--- |
+| **Ingress** | 🎙️ **Voice Capture** | `Speechmatics API` | Handles real-time, accurate audio dictation to text stream. |
+| **Core 1** | 🪐 **Universe Generator** | `gemini-1.5-flash` | Establishes environmental laws, global factions, and structural world boundaries. |
+| **Core 2** | 🎨 **Visual Director** | `gemini-1.5-flash` | Extracts descriptive prompts and dynamically queries Pollinations AI for concept art. |
+| **Core 3** | ⚖️ **Lore Keeper (The Referee)** | `gemini-1.5-pro` | Cross-references proposals against world rules. Emits structural `APPROVED` or `REJECTED` flags. |
+| **Core 4** | 🎭 **Character Persona (Jack)** | `gemini-1.5-flash` | Processes downstream timeline updates and responds with active, in-character localized roleplay. |
+
+---
 
 ### 🤖 Agent Roles & Internal Prompts
 
@@ -85,63 +70,138 @@ The entire platform orchestrates four distinct AI agent personas built using the
 
 ---
 
-## 🚀 Local Installation & Deployment Guide
+ # 🚀 Local Installation & Deployment Guide
 
 To run this platform locally on your machine for engineering evaluation, execute the following steps:
 
-### 1. Clone the Repository
+---
+
+## 1. Clone the Repository
+
 ```bash
 git clone https://github.com/rupikap009/milanAIWeek2026.git
 cd milanAIWeek2026
 ```
 
-### 2. Configure Environment Keys
-Create a local secure configuration or configure your system environment variables with your active provider tokens:
+---
+
+## 2. Configure Environment Keys
+
+Create a local secure configuration or configure your system environment variables with your active provider tokens.
+
+### Unix/macOS Environment Injection
 
 ```bash
-# Unix/macOS environment injection
 export GEMINI_API_KEY="your_google_studio_key_here"
 export SPEECHMATICS_API_KEY="your_speechmatics_token_here"
 ```
 
-### 3. Install Module Dependencies
+### Windows PowerShell
+
+```powershell
+setx GEMINI_API_KEY "your_google_studio_key_here"
+setx SPEECHMATICS_API_KEY "your_speechmatics_token_here"
+```
+
+---
+
+## 3. Install Module Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Boot Up the Application Engine
-# If your file is inside the frontend folder:
-streamlit run frontend/app.py
+---
 
-# If you moved your merged file to the root folder:
+## 4. Boot Up the Application Engine
+
+Depending on your exact repository structure, launch using one of the following commands:
+
+### If Running from the Root Workspace Directory
+
+```bash
 streamlit run app.py
+```
+
+### If the Application File is Inside the `frontend` Directory
+
+```bash
+streamlit run frontend/app.py
+```
 
 ---
 
-## 🔬 Hackathon Evaluation Test Case Scenarios
-To verify the cross-agent coordination and state compliance loops under evaluation, test using the following step-by-step pathways:
+# 🔬 Test Case Scenarios
 
-### Test Case A: The Automated Lore Validation Failure Loop
-1. **Initialize Universe Concept:** Provide the prompt: *"A cyber-dystopian subterranean metropolis lit by magma where human emotions are legally prohibited by bio-scanners."*
-2. **Submit Contradictory Action:** Type or dictate: *"Suddenly, a magical portal opens and a medieval dragon flies through the city, prompting all the citizens to throw a happy celebration party without setting off any sensors."*
-3. **Expected Output:** The system will capture the emotional and high-fantasy anomaly, trigger a REJECTED warning banner via the Lore Keeper, and refuse to update the public history ledger.
-
-### Test Case B: The Downstream Multi-Agent Context Adaptation Loop
-1. **Initialize Universe Concept:** Use the same magma city description above.
-2. **Submit Compliant Action:** Dictate: *"Jack successfully updates his ocular cyberware firmware, allowing his eyes to mask his emotional fluctuations from the city surveillance grid."*
-3. **Expected Output:** The Lore Keeper flags APPROVED. The entry appends onto the public history block, and Jack the Whisper Merchant dynamically initializes a character bubble reacting to his successful system override code.
+To verify the cross-agent coordination and state compliance loops under evaluation, test using the following pathways.
 
 ---
 
-### 📝 Comprehensive Example Run (Judge Evaluation Walkthrough)
+## 🧪 Test Case A — Automated Lore Validation Failure Loop
 
-**1. User Voice/Text Input (The System Trigger):**
-> *"A strike team of Apathy Enforcers raids the Lower Strata to seize forbidden historical diaries."*
+### Step 1 — Initialize Universe Concept
 
-**2. The System Responds (The Multi-Agent Swarm in Action):**
-* **⚖️ Lore Keeper Agent:** `[STATUS: APPROVED]`  
-  *"The action is logical. The presence of Apathy Enforcers and the hunting of emotional artifacts matches the initialized corporate-dystopian laws of this universe."*
-* **🎭 Jack the Whisper Merchant:**  
-  *"Let them kick down doors in the Lower Strata all they want. They don't know I moved the primary data caches out to the sulfur pipes two cycles ago. Keep your heads down, family."*
+Provide the following prompt:
+
+```text
+A cyber-dystopian subterranean metropolis lit by magma where human emotions are legally prohibited by bio-scanners.
+```
+
+### Step 2 — Submit a Contradictory Action
+
+```text
+Suddenly, a magical portal opens and a medieval dragon flies through the city, prompting all the citizens to throw a happy celebration party without setting off any sensors.
+```
+
+### ✅ Expected Output
+
+- The system detects the emotional and high-fantasy anomaly.
+- The Lore Keeper triggers a `REJECTED` warning banner.
+- The action is refused from being appended to the public history ledger.
+
+---
+
+## 🧪 Test Case B — Downstream Multi-Agent Context Adaptation Loop
+
+### Step 1 — Initialize Universe Concept
+
+Use the same magma city universe description above.
+
+### Step 2 — Submit a Compliant Action
+
+```text
+Jack successfully updates his ocular cyberware firmware, allowing his eyes to mask his emotional fluctuations from the city surveillance grid.
+```
+
+### ✅ Expected Output
+
+- The Lore Keeper flags the action as `APPROVED`.
+- The event appends to the public history ledger.
+- Jack the Whisper Merchant dynamically reacts to the successful system override event.
+
+---
+
+# 📝 Comprehensive Example Run 
+
+## 1. User Voice/Text Input (System Trigger)
+
+```text
+A strike team of Apathy Enforcers raids the Lower Strata to seize forbidden historical diaries.
+```
+
+---
+
+## 2. System Response (Multi-Agent Swarm Execution)
+
+### ⚖️ Lore Keeper Agent — `[STATUS: APPROVED]`
+
+> "The action is logical. The presence of Apathy Enforcers and the hunting of emotional artifacts matches the initialized corporate-dystopian laws of this universe."
+
+---
+
+### 🎭 Jack the Whisper Merchant
 
 
+> # 📄 License
+
+This project was developed for the **AI Agent Olympics Hackathon — Milan AI Week 2026**.
